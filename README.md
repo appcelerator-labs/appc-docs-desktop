@@ -5,7 +5,7 @@ Desktop Application for Mac, Windows and Linux to use the [Appcelerator Document
 
 ## Install
 
-You can find the Windows and Mac installers and Linux tars in the [dist](dist) folder. Download, install and run.. it's that easy.
+Get the installers via [Releases](https://github.com/appcelerator-developer-relations/appc-docs-desktop/releases).
 
 ## Build
 Instructions to update and build the app from source.

@@ -224,9 +224,7 @@ if (cmd && exports[cmd]) {
 
 		exports.buildWin64,
 
-		exports.buildWin32,
-
-		exports.cleanTmp
+		exports.buildWin32
 
 	], function (err, results) {
 
