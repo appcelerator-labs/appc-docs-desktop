@@ -1,0 +1,19 @@
+{
+  "name": "appc-docs-desktop",
+  "version": "5.0.0",
+  "description": "Appcelerator Documentation",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "electron-builder": "^2.0.0",
+    "electron-packager": "^5.1.0",
+    "electron-prebuilt": "^0.33.1",
+    "fs-extra": "^0.24.0",
+    "request": "^2.63.0",
+    "rimraf": "^2.4.3",
+    "unzip": "^0.1.11"
+  }
+}

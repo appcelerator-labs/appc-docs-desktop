@@ -1,0 +1,4 @@
+app/docs
+dist
+node_modules
+tmp

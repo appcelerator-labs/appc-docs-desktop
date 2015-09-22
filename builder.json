@@ -1,0 +1,16 @@
+{
+  "osx" : {
+    "title": "Appcelerator Docs",
+    "background": "assets/background.png",
+    "icon": "assets/icon.icns",
+    "icon-size": 80,
+    "contents": [
+      { "x": 320, "y": 150, "type": "link", "path": "/Applications" },
+      { "x": 160, "y": 155, "type": "file" }
+    ]
+  },
+  "win" : {
+    "title" : "Appcelerator Docs",
+    "icon" : "assets/icon.ico"
+  }
+}
