@@ -5,6 +5,7 @@ var async = require('async');
 var builder = require('electron-builder').init();
 var fs = require('fs-extra');
 var packager = require('electron-packager');
+var ProgressBar = require('progress');
 var request = require('request');
 var rimraf = require('rimraf');
 var unzip = require('unzip');
@@ -59,6 +60,26 @@ exports.downloadNewest = function (callback) {
 
 			request
 				.get(url)
+				.on('response', function (res) {
+					var len = parseInt(res.headers['content-length'], 10);
+
+					console.log();
+
+					var bar = new ProgressBar('[:bar] :percent :etas', {
+						complete: '=',
+						incomplete: ' ',
+						width: 20,
+						total: len
+					});
+
+					res.on('data', function (chunk) {
+						bar.tick(chunk.length);
+					});
+
+					res.on('end', function () {
+						console.log('\n');
+					});
+				})
 				.on('error', callback)
 				.on('end', function () {
 					console.info('Extracting download..');
@@ -78,36 +99,44 @@ exports.downloadNewest = function (callback) {
 	});
 };
 
-exports.packageAll = function (callback) {
-
+exports.copyApp = function (callback) {
 	console.info('Copying app to tmp/app..');
 
-	fs.copy('app', 'tmp/app', function (err) {
+	fs.copy('app', 'tmp/app', callback);
+};
+
+exports.packageAll = function (callback) {
+
+	console.info('Packaging..');
+
+	packager({
+		dir: 'tmp/app',
+		name: config.osx.title,
+		out: 'tmp/builds',
+		version: pkg.dependencies['electron-prebuilt'].substr(1),
+		all: true,
+		icon: 'assets/icon',
+	}, function (err, packages) {
 
 		if (err) {
 			return callback(err);
 		}
 
-		console.info('Packaging..');
+		fs.ensureDirSync('dist');
 
-		packager({
-			dir: 'tmp/app',
-			name: config.osx.title,
-			out: 'tmp/builds',
-			version: pkg.dependencies['electron-prebuilt'].substr(1),
-			all: true,
-			icon: 'assets/icon',
-		}, function (err, packages) {
+		console.info('Compressing linux-ia32..');
 
-			if (err) {
-				return callback(err);
+		child_process.execFile('tar', ['-czf', path.join(__dirname, 'dist', config.osx.title + ' linux-ia32.tar.gz'), config.osx.title + '-linux-ia32'], {
+			cwd: 'tmp/builds'
+		}, function (error, stdout, stderr) {
+
+			if (error) {
+				return callback(error);
 			}
 
-			fs.ensureDirSync('dist');
+			console.info('Compressing linux-x64..');
 
-			console.info('Compressing linux-ia32..');
-
-			child_process.execFile('tar', ['-czf', path.join(__dirname, 'dist', config.osx.title + ' linux-ia32.tar.gz'), config.osx.title + '-linux-ia32'], {
+			child_process.execFile('tar', ['-czf', path.join(__dirname, 'dist', config.osx.title + ' linux-x64.tar.gz'), config.osx.title + '-linux-x64'], {
 				cwd: 'tmp/builds'
 			}, function (error, stdout, stderr) {
 
@@ -115,23 +144,12 @@ exports.packageAll = function (callback) {
 					return callback(error);
 				}
 
-				console.info('Compressing linux-x64..');
-
-				child_process.execFile('tar', ['-czf', path.join(__dirname, 'dist', config.osx.title + ' linux-x64.tar.gz'), config.osx.title + '-linux-x64'], {
-					cwd: 'tmp/builds'
-				}, function (error, stdout, stderr) {
-
-					if (error) {
-						return callback(error);
-					}
-
-					return callback();
-
-				});
+				return callback();
 
 			});
 
 		});
+
 	});
 };
 
@@ -194,46 +212,65 @@ exports.buildWin64 = function (callback) {
 	});
 };
 
-var cmd = process.argv.slice(2);
+exports.run = function (callback) {
 
-if (cmd && exports[cmd]) {
+	child_process.execFile('./node_modules/.bin/electron', ['./tmp/app'], {}, function (error, stdout, stderr) {
 
-	exports[cmd](function (err, res) {
+		if (error) {
+			return callback(error);
+		}
 
-		if (err) {
-			console.error(err);
+		return callback();
+
+	});
+};
+
+var tasks = [];
+var input = process.argv.slice(2);
+
+if (input) {
+
+	input.forEach(function (task) {
+
+		if (task === 'clean') {
+			tasks.push(exports.cleanTmp, exports.cleanDist);
+
+		} else if (task === 'dev') {
+			tasks.push(exports.copyApp, exports.run);
+
+		} else if (task === 'build') {
+			tasks.push(exports.buildOSX, exports.buildWin64, exports.buildWin32);
+
+		} else if (exports[task]) {
+			tasks.push(exports[task]);
+
+		} else {
+			console.error('Cannot find task: ' + task);
 			process.exit(1);
 		}
 
-		console.info(res);
 	});
 
 } else {
-
-	async.series([
-
+	tasks = [
 		exports.cleanTmp,
-
 		exports.cleanDist,
-
 		exports.downloadNewest,
-
+		exports.copyApp,
 		exports.packageAll,
-
 		exports.buildOSX,
-
 		exports.buildWin64,
-
 		exports.buildWin32
-
-	], function (err, results) {
-
-		if (err) {
-			console.error(err);
-			process.exit(1);
-		}
-
-		console.info('Done!');
-
-	});
+	];
 }
+
+async.series(tasks, function (err, results) {
+
+	if (err) {
+		console.error(err);
+		process.exit(1);
+	}
+
+	console.info('Done!');
+
+});
