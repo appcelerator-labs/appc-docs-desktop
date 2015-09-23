@@ -228,7 +228,7 @@ exports.run = function (callback) {
 var tasks = [];
 var input = process.argv.slice(2);
 
-if (input) {
+if (input.length > 0) {
 
 	input.forEach(function (task) {
 
