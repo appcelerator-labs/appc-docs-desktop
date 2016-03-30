@@ -1,4 +1,4 @@
-# Appcelerator Documentation for Desktop
+# Appcelerator Docs Desktop App ![EXPERIMENTAL](https://img.shields.io/badge/WARNING-EXPERIMENTAL-red.svg?style=flat-square)
 Desktop Application for Mac, Windows and Linux to use the [Appcelerator Documentation](http://docs.appcelerator.com) offline. Uses GitHub's [Electron](http://electron.atom.io/).
 
 ![screenshot](screenshot.png)
