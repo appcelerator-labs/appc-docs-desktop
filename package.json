@@ -1,20 +1,42 @@
 {
   "name": "appc-docs-desktop",
   "version": "5.0.0",
-  "description": "Appcelerator Documentation",
+  "description": "Appcelerator Offline Documentation Desktop App",
   "main": "build.js",
   "scripts": {
     "build": "node build.js"
   },
+  "build": {
+    "osx": {
+      "title": "AppC-Docs",
+      "background": "assets/background.png",
+      "icon": "assets/icon.icns",
+      "icon-size": 80,
+      "contents": [{
+        "x": 320,
+        "y": 150,
+        "type": "link",
+        "path": "/Applications"
+      }, {
+        "x": 160,
+        "y": 155,
+        "type": "file"
+      }]
+    },
+    "win": {
+      "title": "AppC-Docs",
+      "icon": "assets/icon.ico"
+    }
+  },
   "dependencies": {
-    "async": "^1.4.2",
-    "electron-builder": "^2.0.0",
-    "electron-packager": "^5.1.0",
-    "electron-prebuilt": "^0.33.1",
-    "fs-extra": "^0.24.0",
+    "async": "^1.5.2",
+    "electron-builder": "^3.1.1",
+    "electron-packager": "^6.0.0",
+    "electron-prebuilt": "^0.37.3",
+    "fs-extra": "^0.26.7",
     "progress": "^1.1.8",
-    "request": "^2.63.0",
-    "rimraf": "^2.4.3",
+    "request": "^2.69.0",
+    "rimraf": "^2.5.2",
     "unzip": "^0.1.11"
   }
 }

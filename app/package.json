@@ -1,5 +1,7 @@
 {
-  "name"    : "Appcelerator Docs",
-  "version" : "1.0.0",
-  "main"    : "main.js"
+  "name": "AppC-Docs",
+  "description": "Appcelerator Offline Documentation Desktop App",
+  "author": "Appcelerator",
+  "version": "1.0.0",
+  "main": "main.js"
 }

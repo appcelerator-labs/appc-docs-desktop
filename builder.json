@@ -1,6 +1,6 @@
 {
   "osx" : {
-    "title": "Appcelerator Docs",
+    "title": "AppC-Docs",
     "background": "assets/background.png",
     "icon": "assets/icon.icns",
     "icon-size": 80,
@@ -10,7 +10,7 @@
     ]
   },
   "win" : {
-    "title" : "Appcelerator Docs",
+    "title" : "AppC-Docs",
     "icon" : "assets/icon.ico"
   }
 }

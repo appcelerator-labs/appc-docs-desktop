@@ -2,7 +2,7 @@ var child_process = require('child_process');
 var path = require('path');
 
 var async = require('async');
-var builder = require('electron-builder').init();
+var builder = require('electron-builder');
 var fs = require('fs-extra');
 var packager = require('electron-packager');
 var ProgressBar = require('progress');
@@ -159,9 +159,10 @@ exports.buildOSX = function (callback) {
 
 	builder.build({
 		appPath: path.resolve('tmp', 'builds', config.osx.title + '-darwin-x64', config.osx.title + '.app'),
-		platform: 'osx',
+		platform: ['osx'],
 		out: 'tmp/builds',
-		config: 'builder.json'
+		config: 'builder.json',
+		dist: false
 	}, function (err, res) {
 
 		if (err) {
@@ -178,7 +179,7 @@ exports.buildWin32 = function (callback) {
 
 	builder.build({
 		appPath: path.resolve('tmp', 'builds', config.osx.title + '-win32-ia32'),
-		platform: 'win',
+		platform: ['win'],
 		out: 'tmp/builds',
 		config: 'builder.json'
 
@@ -198,7 +199,7 @@ exports.buildWin64 = function (callback) {
 
 	builder.build({
 		appPath: path.resolve('tmp', 'builds', config.osx.title + '-win32-x64'),
-		platform: 'win',
+		platform: ['win'],
 		out: 'tmp/builds',
 		config: 'builder.json'
 
